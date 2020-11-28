@@ -1,10 +1,8 @@
 import re
 
-textfile = open("tweet.csv", "r")
-
-text = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', textfile.read())
-
-textfilec = open("tweets.txt", "w")
+textfilec = open("tweets.txt", "r")
+textfileo = open("out.txt", "w")
+text = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', textfilec.read())
 
 
 for line in text.split("\n"):
@@ -20,7 +18,11 @@ for line in text.split("\n"):
     # if tmp.find("&amp;"):
     #     tmp = tmp[:tmp.find("&amp;")] + tmp[tmp.find("&amp;") + 4:]
 
-    textfilec.write(tmp)
+    textfileo.write(tmp)
+
+# rand = random.randint(0, 1000)
+#
+# print(text.find(" ", rand))
 
 
 
