@@ -1,4 +1,4 @@
-import tensorflow as tf
+import tensteorflow as tf
 
 import numpy as np
 import os
@@ -16,10 +16,10 @@ print(len(text))
 # text = text[:100000]
 
 # mapping unique characters to indicies
-vocab = sorted(set(text))
-print('{} unique characters'.format(len(vocab)))
-char2idx = {u: i for i, u in enumerate(vocab)}
-idx2char = np.array(vocab)
+vocabulary = sorted(set(text))
+print('{} unique characters'.format(len(vocabulary)))
+char2idx = {u: i for i, u in enumerate(vocabulary)}
+idx2char = np.array(vocabulary)
 
 text_as_int = np.array([char2idx[c] for c in text])
 
@@ -63,32 +63,32 @@ BUFFER_SIZE = 10000
 # shuffles the dataset
 dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
 
-vocab_size = len(vocab)
+vocabulary_size = len(vocabulary)
 embedding_dim = 256
 rnn_units = 1024
 
 # constructs tensorflow model
-def build_model(vocab_size, embedding_dim, rnn_units, batch_size):
+def build_model(vocabulary_size, embedding_dim, rnn_units, batch_size):
     model = tf.keras.Sequential([
-        tf.keras.layers.Embedding(vocab_size, embedding_dim,
+        tf.keras.layers.Embedding(vocabulary_size, embedding_dim,
                                   batch_input_shape=[batch_size, None]),
         tf.keras.layers.GRU(rnn_units,
                             return_sequences=True,
                             stateful=True,
                             recurrent_initializer='glorot_uniform'),
-        tf.keras.layers.Dense(vocab_size)
+        tf.keras.layers.Dense(vocabulary_size)
     ])
     return model
 
 model = build_model(
-    vocab_size=len(vocab),
+    vocabulary_size=len(vocabulary),
     embedding_dim=embedding_dim,
     rnn_units=rnn_units,
     batch_size=BATCH_SIZE)
 
 for input_example_batch, target_example_batch in dataset.take(1):
     example_batch_predictions = model(input_example_batch)
-    print(example_batch_predictions.shape, "# (batch_size, sequence_length, vocab_size)")
+    print(example_batch_predictions.shape, "# (batch_size, sequence_length, vocabulary_size)")
 
 model.summary()
 
@@ -116,7 +116,7 @@ if(isTraining):
     history = model.fit(dataset, epochs=EPOCHS, callbacks=[checkpoint_callback])
 else:
     tf.train.latest_checkpoint(checkpoint_dir)
-    model = build_model(vocab_size, embedding_dim, rnn_units, batch_size=1)
+    model = build_model(vocabulary_size, embedding_dim, rnn_units, batch_size=1)
     model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
     model.build(tf.TensorShape([32, None]))
 
